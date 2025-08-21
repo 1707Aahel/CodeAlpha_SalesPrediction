@@ -1,0 +1,74 @@
+# TASK 4: Sales Prediction using Python
+# -------------------------------------
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import LabelEncoder
+
+# ---------------------------
+# Step 1: Manually Create Dataset
+# ---------------------------
+data = {
+    "Advertising_Spend": [500, 700, 800, 300, 1000, 1200, 400, 600, 1100, 900],
+    "Target_Segment": ["Teens", "Adults", "Adults", "Seniors", "Teens", "Adults", "Seniors", "Teens", "Adults", "Seniors"],
+    "Platform": ["Instagram", "Facebook", "YouTube", "Newspaper", "YouTube", "Instagram", "Facebook", "Newspaper", "Instagram", "YouTube"],
+    "Sales": [50, 65, 80, 30, 95, 110, 40, 55, 100, 85]
+}
+
+df = pd.DataFrame(data)
+print("Original Dataset:\n", df)
+
+# ---------------------------
+# Step 2: Data Preprocessing
+# ---------------------------
+# Encode categorical variables
+le_segment = LabelEncoder()
+le_platform = LabelEncoder()
+
+df["Target_Segment"] = le_segment.fit_transform(df["Target_Segment"])
+df["Platform"] = le_platform.fit_transform(df["Platform"])
+
+print("\nEncoded Dataset:\n", df)
+
+# ---------------------------
+# Step 3: Feature Selection
+# ---------------------------
+X = df[["Advertising_Spend", "Target_Segment", "Platform"]]  # Independent variables
+y = df["Sales"]  # Dependent variable
+
+# ---------------------------
+# Step 4: Train Model
+# ---------------------------
+model = LinearRegression()
+model.fit(X, y)
+
+print("\nModel Coefficients:", model.coef_)
+print("Model Intercept:", model.intercept_)
+
+# ---------------------------
+# Step 5: Predictions
+# ---------------------------
+df["Predicted_Sales"] = model.predict(X)
+print("\nDataset with Predictions:\n", df)
+
+# ---------------------------
+# Step 6: Visualization - Effect of Advertising Spend
+# ---------------------------
+plt.scatter(df["Advertising_Spend"], df["Sales"], color="blue", label="Actual Sales")
+plt.plot(df["Advertising_Spend"], df["Predicted_Sales"], color="red", label="Predicted Sales")
+plt.xlabel("Advertising Spend")
+plt.ylabel("Sales")
+plt.title("Effect of Advertising Spend on Sales")
+plt.legend()
+plt.show()
+
+# ---------------------------
+# Step 7: Actionable Insights
+# ---------------------------
+print("\n--- Insights ---")
+print("1. Sales generally increase with higher advertising spend.")
+print("2. Different platforms and target segments have varying effectiveness.")
+print("3. Businesses should prioritize spending more on platforms like Instagram/YouTube for higher returns.")
+print("4. Adults seem to be the most responsive segment to ad spend.")
